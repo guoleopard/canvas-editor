@@ -432,9 +432,58 @@ export class SelectControl implements IControlInstance {
     }
   }
 
-  private _createSelectPopupDom() {
+  private async loadValueSets() {
     const control = this.element.control!
-    const valueSets = control.valueSets
+    let valueSets = control.valueSets || []
+    const apiConfig = control.apiConfig
+
+    // 如果存在API配置，则从API获取数据
+    if (apiConfig && apiConfig.url) {
+      try {
+        const response = await fetch(apiConfig.url, {
+          method: apiConfig.method || 'GET',
+          headers: apiConfig.headers || {},
+          body: apiConfig.method === 'POST' ? JSON.stringify(apiConfig.params) : undefined
+        })
+        const data = await response.json()
+
+        // 处理API响应数据
+        const apiResponsePath = apiConfig.responsePath || ''
+        const apiValueKey = apiConfig.valueKey || 'value'
+        const apiCodeKey = apiConfig.codeKey || 'code'
+
+        // 解析响应路径
+        let values = data
+        if (apiResponsePath) {
+          const paths = apiResponsePath.split('.')
+          for (const path of paths) {
+            if (values && typeof values === 'object') {
+              values = values[path]
+            } else {
+              values = []
+              break
+            }
+          }
+        }
+
+        // 转换为IValueSet格式
+        if (Array.isArray(values)) {
+          valueSets = values.map(item => ({
+            value: item[apiValueKey],
+            code: item[apiCodeKey]
+          }))
+        }
+      } catch (error) {
+        console.error('Failed to load value set from API:', error)
+      }
+    }
+
+    return valueSets
+  }
+
+  private async _createSelectPopupDom() {
+    const control = this.element.control!
+    const valueSets = await this.loadValueSets()
     if (!Array.isArray(valueSets) || !valueSets.length) return
     const position = this.control.getPosition()
     if (!position) return
@@ -487,7 +536,7 @@ export class SelectControl implements IControlInstance {
     this.selectDom = selectPopupContainer
   }
 
-  public awake() {
+  public async awake() {
     if (
       this.isPopup ||
       this.control.getIsDisabledControl() ||
@@ -500,7 +549,7 @@ export class SelectControl implements IControlInstance {
     if (elementList[startIndex + 1]?.controlId !== this.element.controlId) {
       return
     }
-    this._createSelectPopupDom()
+    await this._createSelectPopupDom()
     this.isPopup = true
   }
 
