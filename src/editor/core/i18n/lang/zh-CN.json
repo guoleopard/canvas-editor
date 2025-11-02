@@ -8,7 +8,8 @@
       "print": "打印"
     },
     "control": {
-      "delete": "删除控件"
+      "delete": "删除控件",
+      "properties": "属性设置"
     },
     "hyperlink": {
       "delete": "删除链接",
