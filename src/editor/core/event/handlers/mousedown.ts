@@ -74,8 +74,6 @@ export function mousedown(evt: MouseEvent, host: CanvasEvent) {
   ) {
     return
   }
-  // 右键点击时不显示控件选项窗口
-  const isRightClick = evt.button === MouseEventButton.RIGHT;
   // 是否是选区拖拽
   if (!host.isAllowDrag) {
     if (!isReadonly && range.startIndex !== range.endIndex) {
@@ -176,8 +174,7 @@ export function mousedown(evt: MouseEvent, host: CanvasEvent) {
         isCompute: false,
         isSubmitHistory: false,
         isSetCursor:
-          !isDirectHitImage && !isDirectHitCheckbox && !isDirectHitRadio,
-        isShowControlPopup: !isRightClick
+          !isDirectHitImage && !isDirectHitCheckbox && !isDirectHitRadio
       })
     }
     // 首字需定位到行首，非上一行最后一个字后
