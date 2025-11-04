@@ -8,7 +8,8 @@
       "print": "Print"
     },
     "control": {
-      "delete": "Delete control"
+      "delete": "Delete control",
+      "properties": "Properties"
     },
     "hyperlink": {
       "delete": "Delete hyperlink",
