@@ -446,7 +446,7 @@ export class Control {
     }
   }
 
-  public async initControl() {
+  public async initControl(isShowControlPopup: boolean = true) {
     const elementList = this.getElementList()
     const range = this.getRange()
     const element = elementList[range.startIndex]
@@ -459,7 +459,7 @@ export class Control {
       ) {
         if (element.controlComponent === ControlComponent.POSTFIX) {
           this.activeControl.destroy()
-        } else {
+        } else if (isShowControlPopup) {
           await this.activeControl.awake()
         }
       }
@@ -494,7 +494,9 @@ export class Control {
     } else if (control.type === ControlType.SELECT) {
       const selectControl = new SelectControl(element, this)
       this.activeControl = selectControl
-      await selectControl.awake()
+      if (isShowControlPopup) {
+        await selectControl.awake()
+      }
     } else if (control.type === ControlType.CHECKBOX) {
       this.activeControl = new CheckboxControl(element, this)
     } else if (control.type === ControlType.RADIO) {
@@ -502,7 +504,9 @@ export class Control {
     } else if (control.type === ControlType.DATE) {
       const dateControl = new DateControl(element, this)
       this.activeControl = dateControl
-      await dateControl.awake()
+      if (isShowControlPopup) {
+        await dateControl.awake()
+      }
     } else if (control.type === ControlType.NUMBER) {
       this.activeControl = new NumberControl(element, this)
     }
