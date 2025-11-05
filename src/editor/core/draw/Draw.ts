@@ -716,7 +716,7 @@ export class Draw {
     let activeControl = this.control.getActiveControl()
     // 光标在控件内如果当前没有被激活，需要手动激活
     if (!activeControl && this.control.getIsRangeWithinControl()) {
-      this.control.initControl()
+      this.control.initControl(isShowControlPopup)
       activeControl = this.control.getActiveControl()
     }
     if (activeControl && this.control.getIsRangeWithinControl()) {
@@ -2623,7 +2623,8 @@ export class Draw {
       isLazy = true,
       isInit = false,
       isSourceHistory = false,
-      isFirstRender = false
+      isFirstRender = false,
+      isShowControlPopup = true
     } = payload || {}
     let { curIndex } = payload || {}
     const innerWidth = this.getInnerWidth()
@@ -2724,7 +2725,7 @@ export class Draw {
       // 选区样式
       this.range.setRangeStyle()
       // 重新唤起弹窗类控件
-      if (isCompute && this.control.getActiveControl()) {
+      if (isCompute && this.control.getActiveControl() && isShowControlPopup) {
         this.control.reAwakeControl()
       }
       // 表格工具重新渲染

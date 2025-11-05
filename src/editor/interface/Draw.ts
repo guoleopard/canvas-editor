@@ -12,6 +12,7 @@ export interface IDrawOption {
   isInit?: boolean
   isSourceHistory?: boolean
   isFirstRender?: boolean
+  isShowControlPopup?: boolean
 }
 
 export interface IForceUpdateOption {
